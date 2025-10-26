@@ -1,28 +1,34 @@
-# Collection of data
+# 1 Collection of data
+import os 
 import pandas as pd
-df = pd.read_csv("dataset/kelulusan_mahasiswa.csv")
+import seaborn as sns
+
+base_dir = os.path.dirname(os.path.abspath(__file__))
+dataset_path = os.path.join(base_dir, "dataset", "kelulusan_mahasiswa.csv")
+output_dir = os.path.join(base_dir, "output")
+
+df = pd.read_csv(dataset_path)
 print(df.info())
 print(df.head())
 
-# Data Cleaning
+# 2 Data Cleaning
 print(df.isnull().sum())
 df = df.drop_duplicates()
 
-import seaborn as sns
 sns.boxplot(x=df['IPK'])
 
-# Data Analysis and Visualization
+# 3 Data Analysis and Visualization
 print(df.describe())
 sns.histplot(df['IPK'], bins=10, kde=True)
 sns.scatterplot(x='IPK', y='Waktu_Belajar_Jam', data=df, hue='Lulus')
 sns.heatmap(df.corr(), annot=True, cmap="coolwarm")
 
-# Feature Engineering
+# 4 Feature Engineering
 df['Rasio_Absensi'] = df['Jumlah_Absensi'] / 14
 df['IPK_x_Study'] = df['IPK'] * df['Waktu_Belajar_Jam']
-df.to_csv("output/processed_kelulusan.csv", index=False)
+df.to_csv(os.path.join(output_dir, "processed_kelulusan.csv"), index=False)
 
-# Data Splitting
+# 5 Data Splitting
 from sklearn.model_selection import train_test_split
 
 X = df.drop('Lulus', axis=1)
